@@ -1,0 +1,59 @@
+#
+# ビルドルール
+#
+SubDir PROJ ;
+
+#
+# アプリケーション依存のコマンド・オプション指定
+#
+C++  = g++ ;
+LINK = g++ ;
+
+#
+# ビルドスクリプト
+#
+HDRS =
+    ../CImg-2.9.2
+    ../tensorflow_src
+    ../tensorflow_src/tensorflow/lite/tools/make/downloads/flatbuffers/include
+;
+
+C++FLAGS =
+    -O3 -DNDEBUG -fPIC  --std=c++11  -fext-numeric-literals
+;
+
+DEFINES =
+    __LITTLE_ENDIAN__ 
+    TFLITE_WITHOUT_XNNPACK
+;
+
+LINKFLAGS +=
+    -L/usr/local/lib
+    -static
+;
+
+#SEARCH_SOURCE = {=basename} ;
+#LOCATE_TARGET = obj ;
+
+Main tfl_interp.exe :
+	tfl_interp.cc
+	tfl_predict.cc
+;
+LINKLIBS on tfl_interp.exe +=
+    ../tensorflow_src/tensorflow/lite/tools/make/gen/windows_x86_64/lib/libtensorflow-lite.a
+    -lpthread -lm -lz -ldl -lmman -ljpeg -lgdi32 -lreadline -ltermcap
+;
+
+Main AllTests.exe :
+	t/AllTests.cc
+	t/tfl_interp_test.cc
+	tfl_interp.cc
+	tfl_predict.cc
+;
+LINKLIBS on AllTests.exe +=
+    ../tensorflow_src/tensorflow/lite/tools/make/gen/windows_x86_64/lib/libtensorflow-lite.a
+    -lmman -ljpeg -lgdi32
+    -lCppUTest -lCppUTestExt
+    #-lpthread #-lm -lz -ldl -lgdi32 -lreadline -ltermcap
+;
+#SubInclude PROJ src ;
