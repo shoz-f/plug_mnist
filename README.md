@@ -1,6 +1,6 @@
 # PlugMnist
 
-**TODO: Add description**
+MNIST application implemented in Elixir with Tensorflow lite
 
 ## Installation
 
