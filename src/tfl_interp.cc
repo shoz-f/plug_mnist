@@ -267,7 +267,6 @@ main(int argc, char* argv[])
 {
     if (argc < 2) {
         // argument error
-        // expect "tfl_interp <model file>"
         cerr << "expect <model file>\n";
         return 1;
     }

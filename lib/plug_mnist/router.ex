@@ -3,7 +3,7 @@ defmodule PlugMnist.Router do
   
   alias PlugMnist.TflInterp
 
-  @img_file Application.app_dir(:plug_mnist, "/priv/img.jpeg")
+  @img_file Application.app_dir(:plug_mnist, "priv/img.jpeg")
 
   plug Plug.Static.IndexHtml, at: "/"
   plug Plug.Static, at: "/", from: :plug_mnist
