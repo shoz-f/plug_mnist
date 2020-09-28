@@ -1,7 +1,7 @@
 #
 # ビルドルール
 #
-SubDir PROJ ;
+SubDir PROJ src ;
 
 #
 # アプリケーション依存のコマンド・オプション指定
@@ -13,9 +13,9 @@ LINK = g++ ;
 # ビルドスクリプト
 #
 HDRS =
-    ../CImg-2.9.2
-    ../tensorflow_src
-    ../tensorflow_src/tensorflow/lite/tools/make/downloads/flatbuffers/include
+    $(WORK_HOME)/CImg-2.9.2
+    $(WORK_HOME)/tensorflow_src
+    $(WORK_HOME)/tensorflow_src/tensorflow/lite/tools/make/downloads/flatbuffers/include
 ;
 
 C++FLAGS =
@@ -32,28 +32,26 @@ LINKFLAGS +=
     -static
 ;
 
-#SEARCH_SOURCE = {=basename} ;
-#LOCATE_TARGET = obj ;
-
 Main tfl_interp.exe :
 	tfl_interp.cc
 	tfl_predict.cc
 ;
 LINKLIBS on tfl_interp.exe +=
-    ../tensorflow_src/tensorflow/lite/tools/make/gen/windows_x86_64/lib/libtensorflow-lite.a
-    -lpthread -lm -lz -ldl -lmman -ljpeg -lgdi32 -lreadline -ltermcap
+    $(WORK_HOME)/tensorflow_src/tensorflow/lite/tools/make/gen/windows_x86_64/lib/libtensorflow-lite.a
+    -lpthread -lm -lz -ldl -lmman -ljpeg -lgdi32
 ;
+InstallBin priv : tfl_interp.exe ;
 
-Main AllTests.exe :
-	t/AllTests.cc
-	t/tfl_interp_test.cc
-	tfl_interp.cc
-	tfl_predict.cc
-;
-LINKLIBS on AllTests.exe +=
-    ../tensorflow_src/tensorflow/lite/tools/make/gen/windows_x86_64/lib/libtensorflow-lite.a
-    -lmman -ljpeg -lgdi32
-    -lCppUTest -lCppUTestExt
-    #-lpthread #-lm -lz -ldl -lgdi32 -lreadline -ltermcap
-;
+#Main AllTests.exe :
+#	t/AllTests.cc
+#	t/tfl_interp_test.cc
+#	tfl_interp.cc
+#	tfl_predict.cc
+#;
+#LINKLIBS on AllTests.exe +=
+#    ../tensorflow_src/tensorflow/lite/tools/make/gen/windows_x86_64/lib/libtensorflow-lite.a
+#    -lmman -ljpeg -lgdi32
+#    -lCppUTest -lCppUTestExt
+#    #-lpthread -lm -lz -ldl
+#;
 #SubInclude PROJ src ;
