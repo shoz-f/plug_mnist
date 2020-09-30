@@ -19,7 +19,7 @@ HDRS =
 ;
 
 C++FLAGS =
-    -O3 -DNDEBUG -fPIC  --std=c++11  -fext-numeric-literals
+    -O3 -DNDEBUG -fPIC  --std=c++11  -fext-numeric-literals  -fopenmp
 ;
 
 DEFINES =
@@ -38,7 +38,7 @@ Main tfl_interp.exe :
 ;
 LINKLIBS on tfl_interp.exe +=
     $(WORK_HOME)/tensorflow_src/tensorflow/lite/tools/make/gen/windows_x86_64/lib/libtensorflow-lite.a
-    -lpthread -lm -lz -ldl -lmman -ljpeg -lgdi32
+    -lpthread -lm -lz -ldl -lmman -ljpeg -lgdi32 -lgomp
 ;
 InstallBin priv : tfl_interp.exe ;
 
