@@ -2,6 +2,14 @@
 
 MNIST application implemented in Elixir with Tensorflow lite
 
+## Requirement
+
+Following items are needed to build 'plug_mnist'. To store them under "C:/msys64/home/work"
+and invoke 'make'.
+
+- tensorflow_src: https://github.com/tensorflow/tensorflow.git
+- CImg-2.9.2:     http://cimg.eu/download.shtml
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
