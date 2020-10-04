@@ -2,7 +2,7 @@ DEFAULT_TARGETS ?= priv priv/tfl_interp.exe
 
 C++ = g++
 
-WORK_HOME = C:/msys64/home/work
+WORK_HOME ?= C:/msys64/home/work
 INCLUDE   = -I./src \
             -I$(WORK_HOME)/CImg-2.9.2 \
             -I$(WORK_HOME)/tensorflow_src \

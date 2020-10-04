@@ -7,7 +7,10 @@ defmodule PlugMnist.MixProject do
       version: "0.1.0",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+ 
+      make_executable: "make",  # Invoke MinGW64 make
+      compilers: [:elixir_make] ++ Mix.compilers
     ]
   end
 
@@ -25,6 +28,7 @@ defmodule PlugMnist.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:plug_static_index_html, "~> 1.0"},
       {:jason, "~> 1.1"},
+      {:elixir_make, "~> 0.4", runtime: false},
     ]
   end
 end
