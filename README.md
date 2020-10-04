@@ -15,20 +15,22 @@ Following items are needed to build 'plug_mnist'. To store them under "C:/msys64
 Before building 'plug_mnist", you have to prepare 'libtensorflow-lite.a'.
 To see https://qiita.com/ShozF/items/50d45b6234fa11da1a0d more detail.
 
-## Installation
+## Getting start
+You can get the plug_mnist app to invoke following command:
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `plug_mnist` to your list of dependencies in `mix.exs`:
+> mix deps
+> mix compile
 
-```elixir
-def deps do
-  [
-    {:plug_mnist, "~> 0.1.0"}
-  ]
-end
-```
+If your 'libtensorflow-lite.a' is stored to a different directory than the default,
+you need to specify the root directory in the environment variable "WORK_HOME":
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/plug_mnist](https://hexdocs.pm/plug_mnist).
+> set WORK_HOME=C:/msys64/home/other_root
+> mix compile
 
+After then, you run the app:
+
+> mix run --no-halt
+
+and connect BROWSER to "http://localhost:5000"
+
+enjoy!
