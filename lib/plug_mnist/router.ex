@@ -21,7 +21,7 @@ defmodule PlugMnist.Router do
     ans = 
       case TflInterp.predict(@img_file) do
         {:ok, probs}  -> Enum.max_by(probs, &elem(&1, 1)) |> elem(0)
-        {:error, msg} -> -1
+        {:error, _msg} -> -1
         {:timeout}    -> -2
       end
     send_resp(conn, 200, Jason.encode!(%{"ans" => ans}))
