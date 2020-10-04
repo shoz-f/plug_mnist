@@ -1,14 +1,19 @@
 # PlugMnist
 
-MNIST application implemented in Elixir with Tensorflow lite
+MNIST application implemented in Elixir with Tensorflow lite.
+
+## Platform
+- Windows MSYS2/MinGW64
 
 ## Requirement
 
-Following items are needed to build 'plug_mnist'. To store them under "C:/msys64/home/work"
-and invoke 'make'.
+Following items are needed to build 'plug_mnist'. To store them under "C:/msys64/home/work".
 
 - tensorflow_src: https://github.com/tensorflow/tensorflow.git
 - CImg-2.9.2:     http://cimg.eu/download.shtml
+
+Before building 'plug_mnist", you have to prepare 'libtensorflow-lite.a'.
+To see https://qiita.com/ShozF/items/50d45b6234fa11da1a0d more detail.
 
 ## Installation
 
