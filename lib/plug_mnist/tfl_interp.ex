@@ -12,7 +12,7 @@ defmodule PlugMnist.TflInterp do
 
 
   def init(opts) do
-    executable = Application.app_dir(:plug_mnist, "priv/tfl_interp.exe")
+    executable = Application.app_dir(:plug_mnist, "priv/tfl_interp")
     tfl_model  = Application.app_dir(:plug_mnist, Keyword.get(opts, :model))
 
     port = Port.open({:spawn_executable, executable}, [
