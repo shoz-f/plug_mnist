@@ -24,8 +24,8 @@ mix compile
 If your 'libtensorflow-lite.a' is stored to a different directory than the default,
 you need to specify the root directory in the environment variable "WORK_HOME":
 
-$ set WORK_HOME=C:/msys64/home/other_root
-$ mix compile
+> set WORK_HOME=C:/msys64/home/other_root<br>
+mix compile
 
 After then, you run the app:
 
