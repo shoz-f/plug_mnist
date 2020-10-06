@@ -10,6 +10,7 @@ defmodule PlugMnist.MixProject do
       deps: deps(),
  
       make_executable: "make",  # Invoke MinGW64 make
+      make_clean: ["clean"],
       compilers: [:elixir_make] ++ Mix.compilers
     ]
   end
