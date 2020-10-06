@@ -31,6 +31,6 @@ After then, you run the app:
 
 > mix run --no-halt
 
-and connect BROWSER to "http://localhost:5000"
+and connect your browser to "http://localhost:5000"
 
-enjoy!
+Let's enjoy!
