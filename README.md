@@ -18,8 +18,8 @@ To see https://qiita.com/ShozF/items/50d45b6234fa11da1a0d more detail.
 ## Getting start
 You can get the plug_mnist app to invoke following command:
 
-$ mix deps
-$ mix compile
+> mix deps<br>
+mix compile
 
 If your 'libtensorflow-lite.a' is stored to a different directory than the default,
 you need to specify the root directory in the environment variable "WORK_HOME":
