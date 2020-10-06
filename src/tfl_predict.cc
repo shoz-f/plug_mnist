@@ -11,7 +11,8 @@
 /**************************************************************************{{{*/
 #ifndef cimg_plugin
 
-#define cimg_plugin "tfl_predict.cc"
+#define cimg_plugin     "tfl_predict.cc"
+#define cimg_display    0
 #define cimg_use_jpeg
 #include "CImg.h"
 using namespace cimg_library;
