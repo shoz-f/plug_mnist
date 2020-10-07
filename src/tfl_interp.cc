@@ -224,7 +224,7 @@ interp(const char* tfl_name)
         // receive command packet
         string cmd_line;
         ssize_t n = rcv_packet(cmd_line);
-        if (n < 0) {
+        if (n <= 0) {
             break;
         }
 
@@ -247,7 +247,7 @@ interp(const char* tfl_name)
         }
 
         n = snd_packet(result.dump());
-        if (n < 0) {
+        if (n <= 0) {
             break;
         }
     }
