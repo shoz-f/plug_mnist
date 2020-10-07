@@ -3,19 +3,33 @@ calling_from_make:
 	mix compile
 endif
 
-WORK_HOME ?= C:/msys64/home/work
-INCLUDE   = -I./src \
-            -I$(WORK_HOME)/CImg-2.9.2 \
-            -I$(WORK_HOME)/tensorflow_src \
-            -I$(WORK_HOME)/tensorflow_src/tensorflow/lite/tools/make/downloads/flatbuffers/include
-DEFINES   = -D__LITTLE_ENDIAN__ -DTFLITE_WITHOUT_XNNPACK
-CXXFLAGS += -O3 -DNDEBUG -fPIC --std=c++11 -fext-numeric-literals $(INCLUDE) $(DEFINES)
-LDFLAGS  += -L/usr/local/lib -static -lmman -ljpeg
+ifeq ($(CROSSCOMPILE),)
+    ifeq ($(shell uname -s),Linux)
+        DEPS_HOME ?= ./contrib
+        LIB_EXT    = -lpthread -ldl
+        TFL_GEN    = linux_x86_64
+    else
+        DEPS_HOME ?= C:/msys64/home/work
+        LIB_EXT    = -lmman
+        TFL_GEN    = windows_x86_64
+    endif
+else
+endif
 
-TFL_LIB = $(WORK_HOME)/tensorflow_src/tensorflow/lite/tools/make/gen/windows_x86_64/lib/libtensorflow-lite.a
+INCLUDE   = -I./src \
+            -I$(DEPS_HOME)/CImg-2.9.2 \
+            -I$(DEPS_HOME)/tensorflow_src \
+            -I$(DEPS_HOME)/tensorflow_src/tensorflow/lite/tools/make/downloads/flatbuffers/include
+DEFINES   = #-D__LITTLE_ENDIAN__ -DTFLITE_WITHOUT_XNNPACK
+CXXFLAGS += -O3 -DNDEBUG -fPIC --std=c++11 -fext-numeric-literals $(INCLUDE) $(DEFINES)
+LDFLAGS  += -ljpeg $(LIB_EXT)
+
+LIB_TFL = $(DEPS_HOME)/tensorflow_src/tensorflow/lite/tools/make/gen/$(TFL_GEN)/lib/libtensorflow-lite.a
 
 SRC=$(wildcard src/*.cc)
-OBJ=$(addprefix obj/, $(notdir $(SRC:.cc=.o)))
+OBJ=$(SRC:src/%.cc=obj/%.o)
+
+
 
 all: obj priv install
 
@@ -25,7 +39,7 @@ obj/%.o: src/%.cc
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 priv/tfl_interp: $(OBJ)
-	$(CXX) $^ $(TFL_LIB) $(LDFLAGS) -o $@
+	$(CXX) $^ $(LIB_TFL) $(LDFLAGS) -o $@
 
 clean:
 	rm -f priv/tfl_interp $(OBJ)
