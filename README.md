@@ -21,6 +21,12 @@ extra libraries:
 Before building 'plug_mnist", you have to prepare 'libtensorflow-lite.a'.
 To see https://qiita.com/ShozF/items/50d45b6234fa11da1a0d more detail.
 
+## Prepare Extra-libraries
+There is setup script for Ubuntu/WSL2 and Nerves/Rpi.
+
+> cd extra<br>
+./setup_*_extra.sh
+
 ## Getting start
 You can get the plug_mnist app to invoke following command:
 
