@@ -5,24 +5,29 @@ endif
 
 ifeq ($(CROSSCOMPILE),)
     ifeq ($(shell uname -s),Linux)
-        DEPS_HOME ?= ./contrib
+        DEPS_HOME ?= ./extra
         LIB_EXT    = -lpthread -ldl
         TFL_GEN    = linux_x86_64
     else
         DEPS_HOME ?= C:/msys64/home/work
         LIB_EXT    = -lmman
         TFL_GEN    = windows_x86_64
+        INC_EXT    = -I$(DEPS_HOME)/CImg-2.9.2
     endif
 else
+    DEPS_HOME ?= ./extra
+    TFL_GEN    = nerves_armv6
+    INC_EXT    = -I$(DEPS_HOME)/usr/include -I$(DEPS_HOME)/usr/include/arm-linux-gnueabi
+    LDFLAGS    = -L$(DEPS_HOME)/usr/lib/arm-linux-gnueabi -lpthread -ldl -latomic
 endif
 
 INCLUDE   = -I./src \
-            -I$(DEPS_HOME)/CImg-2.9.2 \
             -I$(DEPS_HOME)/tensorflow_src \
-            -I$(DEPS_HOME)/tensorflow_src/tensorflow/lite/tools/make/downloads/flatbuffers/include
+            -I$(DEPS_HOME)/tensorflow_src/tensorflow/lite/tools/make/downloads/flatbuffers/include \
+            $(INC_EXT)
 DEFINES   = #-D__LITTLE_ENDIAN__ -DTFLITE_WITHOUT_XNNPACK
 CXXFLAGS += -O3 -DNDEBUG -fPIC --std=c++11 -fext-numeric-literals $(INCLUDE) $(DEFINES)
-LDFLAGS  += -ljpeg $(LIB_EXT)
+LDFLAGS  += $(LIB_EXT) -ljpeg
 
 LIB_TFL = $(DEPS_HOME)/tensorflow_src/tensorflow/lite/tools/make/gen/$(TFL_GEN)/lib/libtensorflow-lite.a
 

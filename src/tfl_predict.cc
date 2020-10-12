@@ -20,7 +20,7 @@ using namespace cimg_library;
 #include <string>
 using namespace std;
 
-#include <nlohmann/json.hpp>
+#include "nlohmann/json.hpp"
 using json = nlohmann::json;
 
 #include "tensorflow/lite/interpreter.h"
