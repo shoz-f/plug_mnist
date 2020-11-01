@@ -28,6 +28,22 @@ using namespace tflite;
 
 /***  Module Header  ******************************************************}}}*/
 /**
+* Tensorflow lite helper functions
+* @par DESCRIPTION
+*   extract command & arguments string from string
+**/
+/**************************************************************************{{{*/
+template <class T>
+inline T* get_typed_input_tensor(TfLiteTensor* tensor) {
+  return tensor != nullptr ? reinterpret_cast<T*>(tensor->data.raw) : nullptr;
+}
+
+int size_of_dimension(const TfLiteTensor* t, int dim) {
+  return t->dims->data[dim];
+}
+
+/***  Module Header  ******************************************************}}}*/
+/**
 * parse command line string
 * @par DESCRIPTION
 *   extract command & arguments string from string
@@ -46,14 +62,18 @@ predict(unique_ptr<Interpreter>& interpreter, const vector<string>& args, json& 
 /**/
 
     // setup
-    float* input = interpreter->typed_input_tensor<float>(0);
-    
+    TfLiteTensor* input_tensor = interpreter->tensor(0);
+    float* input = get_typed_input_tensor<float>(input_tensor);
+    int width  = size_of_dimension(input_tensor, 1);
+    int height = size_of_dimension(input_tensor, 2);
+
+    typedef CImg<unsigned char> CImgU8;
     try {
-    CImg<unsigned char> image(args[0].c_str());
-    auto gray = image.getRGBtoGRAY().resize(28,28).inverse();
-    cimg_foroff(gray, i) {
-        input[i] = gray[i]/255.;
-    }
+        CImgU8 image(args[0].c_str());
+        auto gray = image.getRGBtoGRAY(CImgU8::cNEGA).resize(width, height);
+        cimg_foroff(gray, i) {
+            input[i] = gray[i]/255.0;
+        }
     }
     catch (...) {
         result["error"] = "fail CImg";
@@ -77,7 +97,13 @@ predict(unique_ptr<Interpreter>& interpreter, const vector<string>& args, json& 
 /**************************************************************************}}}*/
 /*** CImg Plugins:                                                          ***/
 /**************************************************************************{{{*/
-CImg<T> getRGBtoGRAY()
+// option: image convert POSI/NEGA 
+enum {
+    cPOSI = 0,
+    cNEGA
+};
+
+CImg<T> getRGBtoGRAY(int optPN=cPOSI)
 {
     if (_spectrum != 3) {
         throw CImgInstanceException(_cimg_instance
@@ -94,25 +120,12 @@ CImg<T> getRGBtoGRAY()
           G = p2[i],
           B = p3[i];
         Y[i] = (T)(0.299f*R + 0.587f*G + 0.114f*B);
+
+        if (optPN == cNEGA) {
+            Y[i] = cimg::type<T>::max() - Y[i];
+        }
     }
     return res;
-}
-
-/******************************************************************************/
-CImg<T> inverse()
-{
-    if (_spectrum != 1) {
-        throw CImgInstanceException(_cimg_instance
-                                    "inverse(): Instance is not a RGB image.",
-                                    cimg_instance);
-    }
-    T *p1 = data(0,0,0,0);
-    const longT whd = (longT)width()*height()*depth();
-    cimg_pragma_openmp(parallel for cimg_openmp_if_size(whd,256))
-    for (longT i = 0; i < whd; i++) {
-        p1[i] = cimg::type<T>::max() - p1[i];
-    }
-    return *this;
 }
 #endif
 /*** tfl_predict.cc *******************************************************}}}*/
