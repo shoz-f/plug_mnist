@@ -38,7 +38,7 @@ inline T* get_typed_input_tensor(TfLiteTensor* tensor) {
   return tensor != nullptr ? reinterpret_cast<T*>(tensor->data.raw) : nullptr;
 }
 
-int size_of_dimension(const TfLiteTensor* t, int dim) {
+inline int size_of_dimension(const TfLiteTensor* t, int dim) {
   return t->dims->data[dim];
 }
 
