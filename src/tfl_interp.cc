@@ -25,6 +25,8 @@
 #include <string>
 using namespace std;
 
+#include <getopt.h>
+
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
 
@@ -37,7 +39,11 @@ struct {
     string mPath;
     string mExe;
     string mTflModel;
-} gInfo;
+    bool  mPortMode;
+}
+gInfo = {
+    .mPortMode = true
+};
 
 /***  Module Header  ******************************************************}}}*/
 /**
@@ -124,7 +130,7 @@ full_write(int fd, const void *buf, size_t count)
 **/
 /**************************************************************************{{{*/
 ssize_t
-rcv_packet(string& cmd_line)
+rcv_packet_port(string& cmd_line)
 {
     // receive packet size
     char big_endian[2];
@@ -156,6 +162,29 @@ rcv_packet(string& cmd_line)
 
 /***  Module Header  ******************************************************}}}*/
 /**
+* receive command
+* @par DESCRIPTION
+*   receive command packet and store it to "buff"
+*   gInfo.mPortMode selects receive format/ true: Erlang Port, false: std::cin
+*
+* @retval res >  0  success
+* @retval res == 0  termination
+* @retval res <  0  error
+**/
+/**************************************************************************{{{*/
+ssize_t
+rcv_packet(string& cmd_line)
+{
+    if (gInfo.mPortMode) {
+        return rcv_packet_port(cmd_line);
+    }
+    else {
+        return (std::getline(std::cin, cmd_line)) ? cmd_line.length() : 0;
+    }
+}
+
+/***  Module Header  ******************************************************}}}*/
+/**
 * send result packet to Elixir/Erlang
 * @par DESCRIPTION
 *   construct message packet and send it to stdout
@@ -164,7 +193,7 @@ rcv_packet(string& cmd_line)
 **/
 /**************************************************************************{{{*/
 ssize_t
-snd_packet(string result)
+snd_packet_port(string result)
 {
     unsigned short len = result.size();
 
@@ -174,6 +203,28 @@ snd_packet(string result)
     result.insert(0, big_endian, sizeof(big_endian));
 
     return full_write(STDOUT_FILENO, result.c_str(), len+2);
+}
+
+/***  Module Header  ******************************************************}}}*/
+/**
+* send result packet to Elixir/Erlang
+* @par DESCRIPTION
+*   construct message packet and send it to stdout
+*   gInfo.mPortMode selects send format/ true: Erlang Port, false: std::cin
+*
+* @return count of sent byte or error code
+**/
+/**************************************************************************{{{*/
+ssize_t
+snd_packet(string result)
+{
+    if (gInfo.mPortMode) {
+        return snd_packet_port(result);
+    }
+    else {
+        std::cout << result << std::endl;
+        return result.length();
+    }
 }
 
 /***  Module Header  ******************************************************}}}*/
@@ -265,17 +316,35 @@ interp(const char* tfl_name)
 int
 main(int argc, char* argv[])
 {
-    if (argc < 2) {
+    struct option longopts[] = {
+        { "normal", no_argument,       NULL, 'n' },
+        { 0,        0,                 0,     0  },
+    };
+    int opt, longindex;
+
+    gInfo.mPortMode = true;
+    while ((opt = getopt_long(argc, argv, "n", longopts, NULL)) != -1) {
+        switch (opt) {
+        case 'n':
+            gInfo.mPortMode = false;
+            break;
+        case '?':
+        case ':':
+            return 1;
+        }
+    }
+
+    if ((argc - optind) < 1) {
         // argument error
         cerr << "expect <model file>\n";
         return 1;
     }
-    
+
     // save exe infomations
     gInfo.mExe.assign(argv[0]);
-    gInfo.mTflModel.assign(argv[1]);
+    gInfo.mTflModel.assign(argv[optind]);
 
-    interp(argv[1]);
+    interp(gInfo.mTflModel.c_str());
     
     return 0;
 }

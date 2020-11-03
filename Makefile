@@ -12,7 +12,7 @@ ifeq ($(CROSSCOMPILE),)
         DEPS_HOME ?= ./extra
         LIB_EXT    = -lmman
         TFL_GEN    = windows_x86_64
-        INC_EXT    = -I$(DEPS_HOME)/CImg-2.9.2
+        INC_EXT    = -I$(DEPS_HOME)/usr/include
     endif
 else
     ifeq (, $(findstring "$(MIX_TARGET)","rpi" "rpi0" "rpi2" "rpi3"))
