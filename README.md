@@ -1,3 +1,5 @@
+## THIS PROJECT is DEPLICATED!! I will move this to new project besed on TflInterp.
+
 # PlugMnist
 
 MNIST application implemented in Elixir with Tensorflow lite.
